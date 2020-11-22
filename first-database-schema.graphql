@@ -1,0 +1,76 @@
+type User @collection(name: "users") {
+    username: String! @unique(index: "unique_username")
+    email: String!
+    isActive: Boolean!
+    address: Address
+    posts: [Post!] @relation(name: "user_posts")
+}
+
+type Address @embedded {
+    street: String!
+    city: String!
+    zipCode: Int!
+}
+
+type Post {
+    title: String!
+    body: String!
+    author: User! @relation(name: "user_posts")
+}
+
+# One-to-one relationship
+type Owner {
+    name: String!
+    car: Car @relation(name: "owner_car")
+}
+
+type Car {
+    numberPlate: String!
+    owner: Owner @relation(name: "owner_car")
+}
+
+# One-to-many relationship
+type Writer @collection(name: "writers") {
+    name: String!
+    books: [Book!] @relation(name: "writer_book")
+}
+
+type Book @collection(name: "books") {
+    name: String!
+    author: Writer @relation(name: "writer_book")
+}
+
+# Many-to-one relationship
+type LandLord @collection(name: "landlords") {
+    name: String!
+}
+
+type Apartment @collection(name: "apartments") {
+    address: String!
+    landlord: LandLord! @relation(name: "landlord-apartment")
+}
+
+# Many-to-many relationship
+type Singer @collection(name: "singers") {
+    name: String!
+    songs: [Song!]! @relation(name: "singer-song")
+}
+
+type Song @collection(name: "songs") {
+    name: String!
+    singer: [Singer!]! @relation(name: "singer-song")
+}
+
+type Query {
+    users: [User!]! @index(name: "users")
+    posts: [Post!]! @index(name: "posts")
+    sayHello: String! @resolver(name: "say_hello")
+    owners: [Owner!]! @index(name: "owners")
+    cars: [Car!]! @index(name: "cars")
+    writers: [Writer!]! @index(name: "writers")
+    books: [Book!]! @index(name: "books")
+    landlords: [LandLord!]! @index(name: "landlords")
+    apartments: [Apartment!]! @index(name: "apartments")
+    singers: [Singer!]! @index(name: "singers")
+    songs: [Song!]! @index(name: "songs")
+}
